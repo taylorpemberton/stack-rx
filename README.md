@@ -1,16 +1,43 @@
-# React + Vite
+# stack-rx
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Research directory for bioactive peptides. Browse, compare, and get recommendations.
 
-Currently, two official plugins are available:
+## Pages
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `/` — Filterable directory of 22 peptides with stats, categories, and research status
+- `/peptide/:id` — Detail page per peptide (stats, benefits, properties, sources)
+- `/quiz` — Recommendation quiz (4 questions, email-gated results, server-side scoring)
+- `/calculator` — Dosing calculator with reconstitution, titration chart, syringe visual
+- `/blog` — Community highlights from r/peptides, r/biohackers, r/retatrutide
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** + **TypeScript** + **Vite**
+- **react-router-dom v7** — BrowserRouter (no hash)
+- **react-helmet-async** — Per-page SEO/OG meta tags
+- **recharts** — Titration chart in calculator
+- **satori** + **@resvg/resvg-js** — Build-time OG image generation (25 PNGs)
+- **Vercel** — Hosting + serverless functions (`api/subscribe.js`)
 
-## Expanding the ESLint configuration
+## SEO
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Every page gets: `<title>`, `<meta description>`, OG tags, Twitter Card, canonical URL, and JSON-LD structured data. All routes are pre-rendered to static HTML at build time. Sitemap and robots.txt are auto-generated.
+
+## Build
+
+```
+npm run dev              # Dev server
+npm run build            # Full pipeline: OG images → Vite build → prerender → sitemap
+npm run build:quick      # Vite build only (skip OG/prerender)
+npm run generate:og      # Regenerate OG images
+```
+
+## Deploy
+
+Vercel. Set `VITE_BASE_URL` env var to your domain. The `api/` directory is auto-detected as serverless functions.
+
+## Quiz email gate
+
+Scoring runs server-side in `api/subscribe.js`. Results are not sent to the client until after name + email submission. The blurred preview is decorative — there's no data in the DOM to inspect.
+
+To wire up storage, uncomment one of the options in `api/subscribe.js` (Vercel KV, Supabase, or Resend).

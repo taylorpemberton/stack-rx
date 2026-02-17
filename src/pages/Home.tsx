@@ -3,8 +3,10 @@ import { useLocation } from 'react-router-dom';
 import FilterBar from '../components/FilterBar';
 import ViewToggle from '../components/ViewToggle';
 import PeptideGrid from '../components/PeptideGrid';
+import SEO from '../components/SEO';
 import { peptides } from '../data/peptides';
 import { trackPageView } from '../analytics/gtag';
+import { BASE_URL, SITE_DESCRIPTION } from '../config';
 
 export default function Home() {
   const [activeFilters, setActiveFilters] = useState([]);
@@ -12,7 +14,7 @@ export default function Home() {
   const location = useLocation();
 
   useEffect(() => {
-    trackPageView(location.pathname, 'Peptide Finder — Directory');
+    trackPageView(location.pathname, 'StackRx — Directory');
   }, [location]);
 
   function handleToggle(category) {
@@ -36,8 +38,27 @@ export default function Home() {
         return matchesCategory && matchesPopular && matchesFda;
       });
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Peptide Research Directory',
+    description: SITE_DESCRIPTION,
+    numberOfItems: peptides.length,
+    itemListElement: peptides.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: p.name,
+      url: `${BASE_URL}/peptide/${p.id}`,
+    })),
+  };
+
   return (
     <main className="home">
+      <SEO
+        description={SITE_DESCRIPTION}
+        path="/"
+        jsonLd={jsonLd}
+      />
       <section className="hero">
         <h1>Peptide Directory</h1>
       </section>

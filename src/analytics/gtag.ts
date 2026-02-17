@@ -1,7 +1,7 @@
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 export function initGA() {
-  if (!GA_MEASUREMENT_ID) return;
+  if (typeof window === 'undefined' || !GA_MEASUREMENT_ID) return;
 
   const script = document.createElement('script');
   script.async = true;
@@ -19,7 +19,7 @@ export function initGA() {
 }
 
 export function trackPageView(path, title) {
-  if (!window.gtag) return;
+  if (typeof window === 'undefined' || !window.gtag) return;
   window.gtag('event', 'page_view', {
     page_path: path,
     page_title: title,
@@ -28,7 +28,7 @@ export function trackPageView(path, title) {
 }
 
 export function trackEvent(action, category, label, value) {
-  if (!window.gtag) return;
+  if (typeof window === 'undefined' || !window.gtag) return;
   window.gtag('event', action, {
     event_category: category,
     event_label: label,

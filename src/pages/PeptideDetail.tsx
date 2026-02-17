@@ -2,7 +2,9 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { peptides, statLabels } from '../data/peptides';
 import StatBar from '../components/StatBar';
+import SEO from '../components/SEO';
 import { trackPageView } from '../analytics/gtag';
+import { BASE_URL } from '../config';
 
 export default function PeptideDetail() {
   const { id } = useParams();
@@ -11,7 +13,7 @@ export default function PeptideDetail() {
 
   useEffect(() => {
     if (peptide) {
-      trackPageView(location.pathname, `${peptide.name} — Peptide Finder`);
+      trackPageView(location.pathname, `${peptide.name} — StackRx`);
     }
   }, [location, peptide]);
 
@@ -26,8 +28,25 @@ export default function PeptideDetail() {
     );
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalEntity',
+    name: peptide.name,
+    alternateName: peptide.alsoKnownAs || [],
+    description: peptide.description,
+    medicineSystem: 'WesternConventional',
+    url: `${BASE_URL}/peptide/${peptide.id}`,
+  };
+
   return (
     <main className="detail-page">
+      <SEO
+        title={peptide.name}
+        description={peptide.description}
+        path={`/peptide/${peptide.id}`}
+        ogImage={`${BASE_URL}/og/${peptide.id}.png`}
+        jsonLd={jsonLd}
+      />
       <div className="detail-container">
         <Link to="/" className="back-link">&larr; Back to directory</Link>
 
