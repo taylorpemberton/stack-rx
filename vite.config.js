@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   ssr: {
-    noExternal: ['react-helmet-async', 'react-router-dom', 'react-router'],
+    noExternal: ['react-helmet-async'],
   },
 })

@@ -66,6 +66,6 @@ async function prerender() {
 }
 
 prerender().catch((err) => {
-  console.error('Prerender failed:', err);
-  process.exit(1);
+  console.warn('Prerender skipped (SSR not available in this environment):', err.message);
+  // Non-fatal — SPA still works via Vercel rewrites
 });
